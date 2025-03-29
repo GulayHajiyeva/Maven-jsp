@@ -9,13 +9,8 @@
     <h2>List of Teachers</h2>
 
     <%
-
         TeacherRepo tp = new TeacherRepo();
-
-
         List<Teacher> teachers = tp.getList();
-
-
         for (Teacher teacher : teachers) {
             out.println("<p>" + teacher.getName() + "</p>");
         }

@@ -1,3 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"%>
+<%@ page import="Teacher.repo.TeacherRepo" %>
+<%@ page import="Teacher.entity.Teacher" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,70 +14,99 @@
 </head>
 <body>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Search Form</h2>
+<%
 
-    <!-- Form -->
-    <form id="searchForm">
+    if (request.getParameter("action") != null && request.getParameter("action").equals("delete")) {
+        int teacherId = Integer.parseInt(request.getParameter("id"));
+        TeacherRepo tp = new TeacherRepo();
+        Teacher teacher = new Teacher();
+        teacher.setId(teacherId);
+        tp.delete(teacher); // Delete the teacher
+        response.sendRedirect("test.jsp");
+        return;
+    }
+
+
+    if (request.getParameter("action") != null && request.getParameter("action").equals("insert")) {
+        String name = request.getParameter("name");
+        String surname = request.getParameter("surname");
+        String subject = request.getParameter("subject");
+        double salary = Double.parseDouble(request.getParameter("salary"));
+
+        Teacher newTeacher = new Teacher();
+        newTeacher.setName(name);
+        newTeacher.setSurname(surname);
+        newTeacher.setSubject(subject);
+        newTeacher.setSalary(salary);
+
+        TeacherRepo tp = new TeacherRepo();
+        tp.insert(newTeacher);  // Insert the new teacher into the database
+        response.sendRedirect("test.jsp");
+        return;
+    }
+%>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Insert New Teacher</h2>
+    <form action="test.jsp" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter name">
+            <input type="text" class="form-control" name="name" placeholder="Enter name" required>
         </div>
         <div class="mb-3">
             <label for="surname" class="form-label">Surname</label>
-            <input type="text" class="form-control" id="surname" placeholder="Enter surname">
+            <input type="text" class="form-control" name="surname" placeholder="Enter surname" required>
         </div>
         <div class="mb-3">
             <label for="subject" class="form-label">Subject</label>
-            <input type="text" class="form-control" id="subject" placeholder="Enter subject">
+            <input type="text" class="form-control" name="subject" placeholder="Enter subject" required>
         </div>
         <div class="mb-3">
             <label for="salary" class="form-label">Salary</label>
-            <input type="number" class="form-control" id="salary" placeholder="Enter salary">
+            <input type="number" class="form-control" name="salary" placeholder="Enter salary" required>
         </div>
-        <button type="button" class="btn btn-primary" onclick="addRow()">Search</button>
+        <input type="hidden" name="action" value="insert">
+        <button type="submit" class="btn btn-success">Insert</button>
     </form>
 
-    <!-- Table -->
-    <h3 class="mt-5">Search Results</h3>
+
+    <h3 class="mt-5">Teacher List</h3>
     <table class="table table-bordered" id="resultTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Subject</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data rows will appear here -->
-        </tbody>
-    </table>
+       <thead>
+           <tr>
+               <th>Name</th>
+               <th>Surname</th>
+               <th>Subject</th>
+               <th>Salary</th>
+               <th>Actions</th>
+           </tr>
+       </thead>
+       <tbody>
+           <%
+               TeacherRepo tp = new TeacherRepo();
+               List<Teacher> teachers = tp.getList();
+
+               for (Teacher teacher : teachers) {
+           %>
+               <tr>
+                   <td><%= teacher.getName() %></td>
+                   <td><%= teacher.getSurname() %></td>
+                   <td><%= teacher.getSubject() %></td>
+                   <td><%= teacher.getSalary() %></td>
+                   <td>
+                      <a href="updateTeacher.jsp?id=<%= teacher.getId() %>" class="btn btn-warning">Update</a>
+                      <a href="?action=delete&id=<%= teacher.getId() %>" class="btn btn-danger">Delete</a>
+                  </td>
+               </tr>
+           <%
+               }
+           %>
+       </tbody>
+   </table>
 </div>
 
-<!-- Bootstrap JS -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    function addRow() {
-        const name = document.getElementById('name').value;
-        const surname = document.getElementById('surname').value;
-        const subject = document.getElementById('subject').value;
-        const salary = document.getElementById('salary').value;
-
-        if (name && surname && subject && salary) {
-            const table = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow();
-
-            newRow.insertCell(0).innerText = name;
-            newRow.insertCell(1).innerText = surname;
-            newRow.insertCell(2).innerText = subject;
-            newRow.insertCell(3).innerText = salary;
-        } else {
-            alert("Please fill in all fields.");
-        }
-    }
-</script>
 
 </body>
 </html>

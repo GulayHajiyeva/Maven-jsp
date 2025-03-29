@@ -30,8 +30,28 @@ public class TeacherRepo implements CommonRepo<Teacher> {
     }
 
     @Override
-    public Teacher findById(int obj) {
-        return null;
+    public Teacher findById(int id) {
+        Teacher teacher = null;
+        String query = "SELECT * FROM teachers WHERE id = ?";
+        try (Connection conn = MyDatabase.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                teacher = new Teacher();
+                teacher.setId(rs.getInt("id"));
+                teacher.setName(rs.getString("name"));
+                teacher.setSurname(rs.getString("surname"));
+                teacher.setSubject(rs.getString("subject"));
+                teacher.setSalary(rs.getDouble("salary"));
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return teacher;
     }
 
     @Override
@@ -65,15 +85,38 @@ public class TeacherRepo implements CommonRepo<Teacher> {
         return teachers;
     }
 
-    @Override
-    public void update(Teacher obj) {
+    public void update(Teacher teacher) {
+        String query = "UPDATE teachers SET name = ?, surname = ?, subject = ?, salary = ? WHERE id = ?";
+        try (Connection conn = MyDatabase.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            stmt.setString(1, teacher.getName());
+            stmt.setString(2, teacher.getSurname());
+            stmt.setString(3, teacher.getSubject());
+            stmt.setDouble(4, teacher.getSalary());
+            stmt.setInt(5, teacher.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void delete(Teacher obj) {
+    public void delete(Teacher teacher) {
+        String query = "DELETE FROM teachers WHERE id = ?";
+        try (Connection conn = MyDatabase.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            stmt.setInt(1, teacher.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
 
 
 }
