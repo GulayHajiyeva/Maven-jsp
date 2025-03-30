@@ -13,6 +13,8 @@
 <body>
 
 <div class="container mt-5">
+
+    <a href="logout" class="btn btn-danger mb-3">Logout</a>
     <h2 class="mb-4">Insert New Teacher</h2>
     <form action="myservlet" method="post">
         <div class="mb-3">

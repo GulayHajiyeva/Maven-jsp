@@ -114,6 +114,31 @@ public class TeacherRepo implements CommonRepo<Teacher> {
             e.printStackTrace();
         }
     }
+    public Teacher findByNameAndSurname(String name, String surname) {
+        Teacher teacher = null;
+        String query = "SELECT * FROM teachers WHERE name = ? AND surname = ?";
+        try (Connection conn = MyDatabase.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, name);
+            stmt.setString(2, surname);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                teacher = new Teacher();
+                teacher.setId(rs.getInt("id"));
+                teacher.setName(rs.getString("name"));
+                teacher.setSurname(rs.getString("surname"));
+                teacher.setSubject(rs.getString("subject"));
+                teacher.setSalary(rs.getDouble("salary"));
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return teacher;
+    }
 
 
 
