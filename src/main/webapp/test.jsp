@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"%>
-<%@ page import="Teacher.repo.TeacherRepo" %>
-<%@ page import="Teacher.entity.Teacher" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="Teacher.entity.Teacher" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,41 +12,9 @@
 </head>
 <body>
 
-<%
-
-    if (request.getParameter("action") != null && request.getParameter("action").equals("delete")) {
-        int teacherId = Integer.parseInt(request.getParameter("id"));
-        TeacherRepo tp = new TeacherRepo();
-        Teacher teacher = new Teacher();
-        teacher.setId(teacherId);
-        tp.delete(teacher); // Delete the teacher
-        response.sendRedirect("test.jsp");
-        return;
-    }
-
-
-    if (request.getParameter("action") != null && request.getParameter("action").equals("insert")) {
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        String subject = request.getParameter("subject");
-        double salary = Double.parseDouble(request.getParameter("salary"));
-
-        Teacher newTeacher = new Teacher();
-        newTeacher.setName(name);
-        newTeacher.setSurname(surname);
-        newTeacher.setSubject(subject);
-        newTeacher.setSalary(salary);
-
-        TeacherRepo tp = new TeacherRepo();
-        tp.insert(newTeacher);  // Insert the new teacher into the database
-        response.sendRedirect("test.jsp");
-        return;
-    }
-%>
-
 <div class="container mt-5">
     <h2 class="mb-4">Insert New Teacher</h2>
-    <form action="test.jsp" method="post">
+    <form action="myservlet" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" name="name" placeholder="Enter name" required>
@@ -69,7 +35,6 @@
         <button type="submit" class="btn btn-success">Insert</button>
     </form>
 
-
     <h3 class="mt-5">Teacher List</h3>
     <table class="table table-bordered" id="resultTable">
        <thead>
@@ -83,10 +48,10 @@
        </thead>
        <tbody>
            <%
-               TeacherRepo tp = new TeacherRepo();
-               List<Teacher> teachers = tp.getList();
+               List<Teacher> teachers = (List<Teacher>) request.getAttribute("teachers");
 
-               for (Teacher teacher : teachers) {
+               if (teachers != null) {
+                   for (Teacher teacher : teachers) {
            %>
                <tr>
                    <td><%= teacher.getName() %></td>
@@ -94,17 +59,18 @@
                    <td><%= teacher.getSubject() %></td>
                    <td><%= teacher.getSalary() %></td>
                    <td>
-                      <a href="updateTeacher.jsp?id=<%= teacher.getId() %>" class="btn btn-warning">Update</a>
-                      <a href="?action=delete&id=<%= teacher.getId() %>" class="btn btn-danger">Delete</a>
+                      <a href="updateTeacherServlet?id=<%= teacher.getId() %>" class="btn btn-warning">Update</a>
+
+                      <a href="myservlet?action=delete&id=<%= teacher.getId() %>" class="btn btn-danger">Delete</a>
                   </td>
                </tr>
            <%
+                   }
                }
            %>
        </tbody>
    </table>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 

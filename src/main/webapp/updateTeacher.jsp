@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"%>
-<%@ page import="Teacher.repo.TeacherRepo" %>
 <%@ page import="Teacher.entity.Teacher" %>
-<%@ page import="java.sql.*" %>
+<%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,35 +16,10 @@
     <h2>Update Teacher Information</h2>
 
     <%
-
-        int teacherId = Integer.parseInt(request.getParameter("id"));
-        TeacherRepo teacherRepo = new TeacherRepo();
-        Teacher teacher = teacherRepo.findById(teacherId);
-
-
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
-
-            String name = request.getParameter("name");
-            String surname = request.getParameter("surname");
-            String subject = request.getParameter("subject");
-            double salary = Double.parseDouble(request.getParameter("salary"));
-
-
-            teacher.setName(name);
-            teacher.setSurname(surname);
-            teacher.setSubject(subject);
-            teacher.setSalary(salary);
-
-
-            teacherRepo.update(teacher);
-
-
-            response.sendRedirect("test.jsp");
-        }
+        Teacher teacher = (Teacher) request.getAttribute("teacher");
     %>
 
-    <!-- Display the form with pre-filled values -->
-    <form action="" method="POST">
+    <form action="updateTeacherServlet" method="POST">
         <input type="hidden" name="id" value="<%= teacher.getId() %>">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
