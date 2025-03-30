@@ -19,7 +19,7 @@
         Teacher teacher = (Teacher) request.getAttribute("teacher");
     %>
 
-    <form action="updateTeacherServlet" method="POST">
+    <form action="myservlet" method="POST">
         <input type="hidden" name="id" value="<%= teacher.getId() %>">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
@@ -37,6 +37,7 @@
             <label for="salary" class="form-label">Salary</label>
             <input type="number" class="form-control" id="salary" name="salary" value="<%= teacher.getSalary() %>">
         </div>
+         <input type="hidden" name="action" value="update">
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

@@ -36,6 +36,28 @@ public class MyServlet extends HttpServlet {
 
                 teacherRepo.insert(newTeacher);
                 response.sendRedirect("test.jsp");
+            } else if (action != null && action.equals("update")) {
+                int teacherId = Integer.parseInt(request.getParameter("id"));
+
+
+                String name = request.getParameter("name");
+                String surname = request.getParameter("surname");
+                String subject = request.getParameter("subject");
+                double salary = Double.parseDouble(request.getParameter("salary"));
+
+
+                TeacherRepo teacherRepo = new TeacherRepo();
+                Teacher teacher = teacherRepo.findById(teacherId);
+
+                teacher.setName(name);
+                teacher.setSurname(surname);
+                teacher.setSubject(subject);
+                teacher.setSalary(salary);
+
+                teacherRepo.update(teacher);
+
+
+                response.sendRedirect("myservlet");
             }
         }
 
@@ -49,12 +71,20 @@ public class MyServlet extends HttpServlet {
                 teacherRepo.delete(teacher);
                 response.sendRedirect("myservlet");
                 return;
+            } else if (action != null && action.equals("update")) {
+                int teacherId = Integer.parseInt(request.getParameter("id"));
+                TeacherRepo teacherRepo = new TeacherRepo();
+                Teacher teacher = teacherRepo.findById(teacherId);
+                request.setAttribute("teacher", teacher);
+                request.getRequestDispatcher("updateTeacher.jsp").forward(request, response);
             }
-
             List<Teacher> teachers = teacherRepo.getList();
             request.setAttribute("teachers", teachers);
 
             request.getRequestDispatcher("test.jsp").forward(request, response);
+
+
+
         }
     }
 

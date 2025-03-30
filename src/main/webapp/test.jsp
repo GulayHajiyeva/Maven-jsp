@@ -59,7 +59,7 @@
                    <td><%= teacher.getSubject() %></td>
                    <td><%= teacher.getSalary() %></td>
                    <td>
-                      <a href="updateTeacherServlet?id=<%= teacher.getId() %>" class="btn btn-warning">Update</a>
+                      <a href="myservlet?action=update&id=<%= teacher.getId() %>" class="btn btn-warning">Update</a>
 
                       <a href="myservlet?action=delete&id=<%= teacher.getId() %>" class="btn btn-danger">Delete</a>
                   </td>
